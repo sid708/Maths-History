@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Infinite Journey: History of Mathematics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0e17;
+    --bg-card: #121826;
+    --accent-gold: #d4a017;
+    --accent-cyan: #00d4ff;
+    --accent-purple: #9b59b6;
+    --text-main: #e8e6e3;
+    --text-muted: #a0a8b8;
+    --line-color: #2a3548;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    font-family: 'Crimson Pro', Georgia, serif;
+  }
+
+  /* Animated background */
+  .bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stars {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    background: linear-gradient(to bottom, rgba(10,14,23,0.95), transparent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    letter-spacing: 2px;
+  }
+
+  .logo span {
+    color: var(--accent-cyan);
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .ctrl-btn {
+    background: rgba(212,160,23,0.15);
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+
+  .ctrl-btn:hover {
+    background: var(--accent-gold);
+    color: var(--bg-deep);
+  }
+
+  .progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-gold), var(--accent-purple));
+    width: 0%;
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  /* Main timeline container */
+  .timeline-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .timeline-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .timeline {
+    display: flex;
+    height: 100%;
+    padding: 80px 0 60px;
+    width: max-content;
+  }
+
+  /* Central horizontal line */
+  .timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      var(--accent-gold) 5%, 
+      var(--accent-cyan) 50%, 
+      var(--accent-purple) 95%, 
+      transparent 100%);
+    transform: translateY(-50%);
+    z-index: 1;
+    box-shadow: 0 0 20px rgba(0,212,255,0.4);
+  }
+
+  /* Era sections */
+  .era {
+    position: relative;
+    min-width: 420px;
+    max-width: 520px;
+    padding: 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .era::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-gold);
+    border: 3px solid var(--bg-deep);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    box-shadow: 0 0 15px var(--accent-gold);
+  }
+
+  .era.highlight::before {
+    width: 22px;
+    height: 22px;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 25px var(--accent-cyan);
+  }
+
+  .era-content {
+    background: linear-gradient(145deg, rgba(18,24,38,0.95), rgba(10,14,23,0.98));
+    border: 1px solid var(--line-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 20px 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s, box-shadow 0.4s;
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-gold) transparent;
+  }
+
+  .era-content:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0,212,255,0.15);
+    border-color: var(--accent-cyan);
+  }
+
+  .era.above .era-content {
+    margin-bottom: 80px;
+  }
+
+  .era.below .era-content {
+    margin-top: 80px;
+  }
+
+  .era-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    margin-bottom: 0.4rem;
+    letter-spacing: 1px;
+  }
+
+  .era-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.35rem;
+    color: var(--accent-gold);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .era-body {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--text-main);
+  }
+
+  .era-body p {
+    margin-bottom: 0.9rem;
+  }
+
+  .era-body strong {
+    color: var(--accent-cyan);
+  }
+
+  .era-body em {
+    color: var(--accent-gold);
+    font-style: italic;
+  }
+
+  .math-formula {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(0,212,255,0.08);
+    border-left: 3px solid var(--accent-cyan);
+    padding: 0.6rem 1rem;
+    margin: 0.8rem 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.95rem;
+    overflow-x: auto;
+  }
+
+  .era-img {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0.8rem 0;
+    border: 1px solid var(--line-color);
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    margin-bottom: 0.4rem;
+    background: rgba(155,89,182,0.2);
+    color: #c39bd3;
+  }
+
+  .tag.zero { background: rgba(0,212,255,0.2); color: var(--accent-cyan); }
+  .tag.pi { background: rgba(212,160,23,0.25); color: var(--accent-gold); }
+  .tag.calc { background: rgba(46,204,113,0.2); color: #2ecc71; }
+
+  /* Intro panel */
+  .intro {
+    min-width: 700px;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 3rem;
+    z-index: 5;
+  }
+
+  .intro h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 3.2rem;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .intro .subtitle {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .intro p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+
+  .scroll-hint {
+    margin-top: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(8px); }
+  }
+
+  /* Floating math symbols */
+  .float-symbol {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    color: rgba(0,212,255,0.15);
+    pointer-events: none;
+    animation: floatY 8s ease-in-out infinite;
+  }
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(8deg); }
+  }
+
+  /* End panel */
+  .outro {
+    min-width: 600px;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .outro h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .era {
+      min-width: 320px;
+      max-width: 360px;
+    }
+    .intro {
+      min-width: 90vw;
+    }
+    .intro h1 {
+      font-size: 2.2rem;
+    }
+    header {
+      padding: 0.8rem 1rem;
+    }
+    .logo {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="bg-canvas" id="bgCanvas"></div>
+
+  <header>
+    <div class="logo">∞ HISTORY OF <span>MATHEMATICS</span></div>
+    <div class="controls">
+      <button class="ctrl-btn" id="autoScrollBtn">▶ Auto Scroll</button>
+      <button class="ctrl-btn" id="resetBtn">↺ Restart</button>
+    </div>
+  </header>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="timeline-wrapper" id="timelineWrapper">
+    <div class="timeline" id="timeline">
+      <!-- Central line will be set by JS -->
+      <div class="timeline-line" id="timelineLine"></div>
+
+      <!-- INTRO -->
+      <section class="intro">
+        <h1>The Infinite Journey</h1>
+        <p class="subtitle">From scratched bones to the edges of infinity</p>
+        <p>
+          Mathematics did not begin with a single discovery. It grew from the human need to count, measure, predict the seasons, divide land, and understand the patterns of the sky. This interactive timeline carries you across more than 40,000 years of mathematical thought — from the first tally marks to the birth of zero, the measurement of π, the invention of calculus, and the abstract universes of the modern age.
+        </p>
+        <p>
+          Scroll horizontally (mouse wheel, trackpad, or drag) to travel through time. Hover over any era for deeper detail. Fast animations and floating symbols accompany the journey.
+        </p>
+        <div class="scroll-hint">→ Scroll right to begin the journey →</div>
+      </section>
+
+      <!-- PREHISTORY -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">~70,000 – 20,000 BCE</div>
+          <h2 class="era-title">The Dawn of Pattern</h2>
+          <img class="era-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Blombos_Cave_engraved_ochre.jpg/640px-Blombos_Cave_engraved_ochre.jpg" alt="Blombos Cave engraved ochre" loading="lazy">
+          <div class="era-body">
+            <p>
+              In the Blombos Cave of South Africa, ochre rocks were engraved with geometric cross-hatch patterns. These are among the earliest known deliberate geometric designs created by humans — evidence that abstract pattern recognition existed tens of thousands of years before writing.
+            </p>
+            <p>
+              Later, the <strong>Lebombo bone</strong> (Swaziland, ~35,000 BCE) and the famous <strong>Ishango bone</strong> (Congo, ~20,000 BCE) show rows of notches. Scholars debate whether these represent lunar calendars, prime numbers, or early multiplication systems. Whatever their exact purpose, they prove that humans were already quantifying the world.
+            </p>
+            <span class="tag">Counting</span>
+            <span class="tag">Geometry</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- EGYPT & MESOPOTAMIA -->
+      <section class="era below">
+        <div class="era-content">
+          <div class="era-year">c. 3400 – 1600 BCE</div>
+          <h2 class="era-title">Birth of Number Systems</h2>
+          <div class="era-body">
+            <p>
+              The Sumerians of Mesopotamia invented the first true <strong>numeral system</strong> and a sophisticated system of weights and measures. By ~2400 BCE they had developed a <em>sexagesimal</em> (base-60) place-value system — the reason we still divide hours into 60 minutes and circles into 360 degrees.
+            </p>
+            <p>
+              In Egypt, hieroglyphic numerals appeared around 3100 BCE. The <strong>Rhind Papyrus</strong> (c. 1650 BCE) and the <strong>Moscow Mathematical Papyrus</strong> (c. 1850 BCE) contain problems of arithmetic, geometry, and even early algebra. Egyptian scribes calculated areas of triangles, volumes of pyramids, and approximated π as 256/81 ≈ 3.1605.
+            </p>
+            <div class="math-formula">Egyptian π ≈ 3.1605 (256/81)</div>
+            <p>
+              The famous tablet <strong>Plimpton 322</strong> (c. 1800 BCE) lists Pythagorean triples centuries before Pythagoras, showing advanced understanding of right triangles.
+            </p>
+            <span class="tag">Sexagesimal</span>
+            <span class="tag">Pythagorean triples</span>
+            <span class="tag pi">π approximation</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GREEK BEGINNINGS -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">c. 600 – 400 BCE</div>
+          <h2 class="era-title">Thales, Pythagoras & the Birth of Proof</h2>
+          <div class="era-body">
+            <p>
+              <strong>Thales of Miletus</strong> (c. 624–546 BCE) is often called the first true mathematician. He is credited with proving geometric theorems deductively rather than by measurement alone — that a circle is bisected by its diameter, that angles in a semicircle are right angles, and that corresponding angles are equal when a transversal crosses parallel lines.
+            </p>
+            <p>
+              <strong>Pythagoras of Samos</strong> (c. 570–495 BCE) and his followers elevated number to a mystical principle. The Pythagorean theorem was known earlier, but the school proved it rigorously and discovered that √2 is irrational — a scandal that shattered their belief that all is number (rational number).
+            </p>
+            <div class="math-formula">a² + b² = c²</div>
+            <p>
+              Zeno of Elea’s paradoxes (Achilles and the tortoise, the arrow) forced deep thinking about infinity, continuity, and motion — problems that would only be resolved with the invention of calculus two thousand years later.
+            </p>
+            <span class="tag">Proof</span>
+            <span class="tag">Irrational numbers</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- EUCLID -->
+      <section class="era below highlight">
+        <div class="era-content">
+          <div class="era-year">c. 300 BCE</div>
+          <h2 class="era-title">Euclid’s Elements — The Temple of Geometry</h2>
+          <img class="era-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Euclid_Statue_in_Oxford.jpg/640px-Euclid_Statue_in_Oxford.jpg" alt="Euclid statue" loading="lazy">
+          <div class="era-body">
+            <p>
+              Working in Alexandria under the Ptolemies, <strong>Euclid</strong> compiled and systematized virtually all existing Greek geometric knowledge into the thirteen books of the <em>Elements</em>. Beginning from a handful of definitions, postulates, and common notions, he deduced hundreds of theorems with a rigor that remained the gold standard for more than two millennia.
+            </p>
+            <p>
+              He proved the infinitude of primes, presented the Euclidean algorithm for greatest common divisors, and constructed the five Platonic solids. The parallel postulate would later become the seed of non-Euclidean geometries.
+            </p>
+            <div class="math-formula">There are infinitely many prime numbers.</div>
+            <p>
+              The <em>Elements</em> was the most successful textbook in history, remaining in continuous use until the 19th century. Its axiomatic method still underpins modern mathematics.
+            </p>
+            <span class="tag">Axiomatic method</span>
+            <span class="tag">Geometry</span>
+            <span class="tag">Number theory</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHIMEDES & PI -->
+      <section class="era above highlight">
+        <div class="era-content">
+          <div class="era-year">c. 287 – 212 BCE</div>
+          <h2 class="era-title">Archimedes — Master of π and Exhaustion</h2>
+          <img class="era-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Domenico-Fetti_Archimedes_1620.jpg/640px-Domenico-Fetti_Archimedes_1620.jpg" alt="Archimedes by Domenico Fetti" loading="lazy">
+          <div class="era-body">
+            <p>
+              <strong>Archimedes of Syracuse</strong> is widely regarded as the greatest mathematician of antiquity. Using the method of exhaustion (a precursor of integral calculus), he proved that the area of a circle is πr² and that the surface area and volume of a sphere are 4πr² and (4/3)πr³ respectively.
+            </p>
+            <p>
+              By inscribing and circumscribing regular polygons with 96 sides, he rigorously established:
+            </p>
+            <div class="math-formula">3 10/71 &lt; π &lt; 3 1/7<br>≈ 3.1408 &lt; π &lt; 3.1429</div>
+            <p>
+              He also invented the Archimedean spiral, calculated areas under parabolas, and developed a system for expressing enormous numbers (in <em>The Sand-Reckoner</em>). His work on levers, buoyancy, and centers of gravity founded mathematical physics.
+            </p>
+            <span class="tag pi">π</span>
+            <span class="tag">Method of exhaustion</span>
+            <span class="tag calc">Proto-calculus</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- OTHER GREEKS -->
+      <section class="era below">
+        <div class="era-content">
+          <div class="era-year">3rd – 1st century BCE</div>
+          <h2 class="era-title">Eratosthenes, Apollonius & Hipparchus</h2>
+          <div class="era-body">
+            <p>
+              <strong>Eratosthenes</strong> (c. 276–194 BCE) invented the sieve for finding prime numbers and measured the circumference of the Earth with remarkable accuracy using geometry and the angle of the sun at Syene and Alexandria.
+            </p>
+            <p>
+              <strong>Apollonius of Perga</strong> wrote the definitive work on conic sections — ellipse, parabola, hyperbola — introducing the names we still use and studying their properties with extraordinary sophistication.
+            </p>
+            <p>
+              <strong>Hipparchus</strong> developed trigonometry (the chord table) and founded scientific astronomy. Later, <strong>Ptolemy</strong>’s <em>Almagest</em> would systematize this knowledge for the next 1,400 years.
+            </p>
+            <span class="tag">Primes</span>
+            <span class="tag">Conics</span>
+            <span class="tag">Trigonometry</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- INDIA & ZERO -->
+      <section class="era above highlight">
+        <div class="era-content">
+          <div class="era-year">c. 500 BCE – 700 CE</div>
+          <h2 class="era-title">The Invention of Zero & the Decimal System</h2>
+          <img class="era-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gwalior_zero.jpg/640px-Gwalior_zero.jpg" alt="Gwalior temple zero inscription" loading="lazy" onerror="this.style.display='none'">
+          <div class="era-body">
+            <p>
+              Indian mathematics developed a revolutionary idea: a symbol for nothingness that was itself a number — <strong>śūnya</strong> (zero). Early references appear in the <em>Chandaḥśāstra</em> of Pingala (c. 300–200 BCE), which also discusses binary numbers and combinatorial patterns resembling Pascal’s triangle.
+            </p>
+            <p>
+              By the 5th–6th centuries CE, the place-value decimal system with zero was fully operational. <strong>Aryabhata</strong> (476–550 CE) gave an accurate approximation of π (3.1416), calculated the circumference of the Earth, and worked with sine tables. He also proposed that the Earth rotates on its axis.
+            </p>
+            <div class="math-formula">Aryabhata’s π ≈ 62832/20000 = 3.1416</div>
+            <p>
+              <strong>Brahmagupta</strong> (598–668 CE) wrote the first clear rules for arithmetic with zero and negative numbers, including the formula for the area of a cyclic quadrilateral and solutions to quadratic equations. The Bakhshali manuscript contains the earliest known written zero in India.
+            </p>
+            <p>
+              The concept of zero as both a placeholder and a number of its own made modern calculation possible. Without it, the decimal system, algebra, and calculus as we know them could not exist.
+            </p>
+            <span class="tag zero">Zero</span>
+            <span class="tag">Decimal system</span>
+            <span class="tag pi">π</span>
+            <span class="tag">Negative numbers</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHINA -->
+      <section class="era below">
+        <div class="era-content">
+          <div class="era-year">c. 200 BCE – 1300 CE</div>
+          <h2 class="era-title">Chinese Mathematics</h2>
+          <div class="era-body">
+            <p>
+              The <em>Nine Chapters on the Mathematical Art</em> (compiled by the 1st century CE) is one of the most important ancient mathematical texts. It contains systems of linear equations solved by what is essentially Gaussian elimination, calculations of areas and volumes, and the Chinese remainder theorem.
+            </p>
+            <p>
+              <strong>Liu Hui</strong> (3rd century) improved π to 3.1416 using a 192-sided polygon and provided commentaries of remarkable insight. Later, <strong>Zu Chongzhi</strong> (5th century) calculated π to seven decimal places (355/113), a record that stood for nearly a thousand years.
+            </p>
+            <div class="math-formula">Zu Chongzhi: 3.1415926 &lt; π &lt; 3.1415927</div>
+            <p>
+              Chinese mathematicians also developed sophisticated methods for solving higher-degree equations and combinatorial problems.
+            </p>
+            <span class="tag pi">π</span>
+            <span class="tag">Linear algebra</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ISLAMIC GOLDEN AGE -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">8th – 15th century</div>
+          <h2 class="era-title">The House of Wisdom & Algebra</h2>
+          <div class="era-body">
+            <p>
+              In Baghdad, the House of Wisdom translated Greek and Indian works and created a new synthesis. <strong>Muḥammad ibn Mūsā al-Khwārizmī</strong> (c. 780–850) wrote <em>Kitāb al-jabr wa’l-muqābala</em> — “The Book of Restoration and Balancing” — from which the word <strong>algebra</strong> derives. He systematized the solution of linear and quadratic equations and introduced Hindu-Arabic numerals to the Islamic world (and eventually Europe).
+            </p>
+            <p>
+              <strong>Al-Khwārizmī</strong>’s name also gave us the word <em>algorithm</em>. Later scholars such as Al-Karaji, Omar Khayyam (geometric solutions of cubics), and Al-Kashi (decimal fractions and highly accurate π) pushed the frontiers further.
+            </p>
+            <p>
+              Trigonometry was transformed into a true mathematical discipline. Spherical trigonometry, the sine, cosine, tangent, and their identities were developed to a high degree. Ibn al-Haytham (Alhazen) made fundamental contributions to optics and early ideas of infinitesimals.
+            </p>
+            <span class="tag">Algebra</span>
+            <span class="tag">Algorithm</span>
+            <span class="tag">Trigonometry</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEDIEVAL EUROPE & FIBONACCI -->
+      <section class="era below">
+        <div class="era-content">
+          <div class="era-year">1202 – 1500</div>
+          <h2 class="era-title">Fibonacci & the Rebirth of European Mathematics</h2>
+          <div class="era-body">
+            <p>
+              <strong>Leonardo of Pisa</strong> (Fibonacci) published <em>Liber Abaci</em> in 1202. It introduced the Hindu-Arabic numeral system (including zero) to Europe, explained commercial arithmetic, and popularized the sequence now named after him:
+            </p>
+            <div class="math-formula">1, 1, 2, 3, 5, 8, 13, 21, 34, …</div>
+            <p>
+              The Fibonacci numbers appear throughout nature and later became central to number theory and computer science. European universities gradually absorbed Greek and Arabic learning through Latin translations. By the late 15th century the first printed editions of Euclid’s <em>Elements</em> appeared (1482).
+            </p>
+            <p>
+              The Kerala school in India (Madhava, Nilakantha) independently developed infinite series for π, sine, and arctangent — essentially discovering the power series expansions of calculus two centuries before Newton and Leibniz.
+            </p>
+            <span class="tag">Hindu-Arabic numerals</span>
+            <span class="tag">Fibonacci</span>
+            <span class="tag pi">Series for π</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RENAISSANCE ALGEBRA -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">16th century</div>
+          <h2 class="era-title">Cubics, Quartics & Complex Numbers</h2>
+          <div class="era-body">
+            <p>
+              Italian mathematicians of the Renaissance cracked the general cubic and quartic equations. <strong>Scipione del Ferro</strong>, <strong>Niccolò Tartaglia</strong>, and <strong>Gerolamo Cardano</strong> published solutions (Cardano’s <em>Ars Magna</em>, 1545). In the process they encountered square roots of negative numbers.
+            </p>
+            <p>
+              <strong>Rafael Bombelli</strong> systematized the arithmetic of these “imaginary” quantities. Complex numbers were born — initially viewed with suspicion, later becoming indispensable.
+            </p>
+            <div class="math-formula">√(−1) = i &nbsp;&nbsp; (though the symbol came later)</div>
+            <p>
+              François Viète introduced modern algebraic notation with vowels for unknowns and consonants for knowns, paving the way for symbolic mathematics.
+            </p>
+            <span class="tag">Algebra</span>
+            <span class="tag">Complex numbers</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17TH CENTURY -->
+      <section class="era below highlight">
+        <div class="era-content">
+          <div class="era-year">1600 – 1687</div>
+          <h2 class="era-title">The Century of Genius — Coordinates, Logs, Probability & Calculus</h2>
+          <div class="era-body">
+            <p>
+              <strong>John Napier</strong> invented logarithms (1614), dramatically simplifying calculation. The constant <em>e</em> first appeared in his work.
+            </p>
+            <p>
+              <strong>René Descartes</strong> and <strong>Pierre de Fermat</strong> independently invented analytic geometry, uniting algebra and geometry through coordinates. Descartes’ <em>La Géométrie</em> (1637) is the birth certificate of the Cartesian plane.
+            </p>
+            <p>
+              Fermat and <strong>Blaise Pascal</strong> founded the mathematical theory of probability while discussing games of chance. Fermat also stated his Last Theorem in the margin of a book — a conjecture that would wait 357 years for a proof.
+            </p>
+            <p>
+              Independently, <strong>Isaac Newton</strong> and <strong>Gottfried Wilhelm Leibniz</strong> invented the calculus. Newton’s fluxions (method of fluxions) and Leibniz’s differentials and the ∫ symbol created the language of continuous change. Newton’s <em>Principia</em> (1687) used these tools to found classical mechanics and universal gravitation.
+            </p>
+            <div class="math-formula">d/dx (xⁿ) = n xⁿ⁻¹ &nbsp;&nbsp; ∫ xⁿ dx = xⁿ⁺¹/(n+1)</div>
+            <span class="tag calc">Calculus</span>
+            <span class="tag">Analytic geometry</span>
+            <span class="tag">Probability</span>
+            <span class="tag">Logarithms</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18TH CENTURY -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">1700 – 1800</div>
+          <h2 class="era-title">Euler — The Master of Us All</h2>
+          <div class="era-body">
+            <p>
+              <strong>Leonhard Euler</strong> (1707–1783) produced more mathematics than any other individual in history. He standardized modern notation (f(x), e, i, ∑, π as the circle constant), solved the Königsberg bridge problem (inventing graph theory), proved the infinitude of primes via the zeta function, and gave the breathtaking identity:
+            </p>
+            <div class="math-formula">e<sup>iπ</sup> + 1 = 0</div>
+            <p>
+              He worked on almost every branch of mathematics then existing: analysis, number theory, mechanics, optics, music theory, and more. His collected works fill over 70 volumes.
+            </p>
+            <p>
+              Meanwhile, <strong>Johann Lambert</strong> proved that π is irrational (1761). The Bernoulli family, Lagrange, Laplace, and many others built the great edifice of 18th-century analysis and mathematical physics.
+            </p>
+            <span class="tag pi">π irrational</span>
+            <span class="tag">Graph theory</span>
+            <span class="tag">Analysis</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19TH CENTURY -->
+      <section class="era below">
+        <div class="era-content">
+          <div class="era-year">1800 – 1900</div>
+          <h2 class="era-title">Rigor, Non-Euclidean Geometry & Infinity</h2>
+          <div class="era-body">
+            <p>
+              <strong>Carl Friedrich Gauss</strong> (“Prince of Mathematicians”) proved the fundamental theorem of algebra, developed differential geometry, number theory (quadratic reciprocity), and non-Euclidean geometry in private. Independently, <strong>János Bolyai</strong> and <strong>Nikolai Lobachevsky</strong> published hyperbolic geometry, shattering the 2,000-year reign of Euclid’s parallel postulate.
+            </p>
+            <p>
+              <strong>Bernhard Riemann</strong> introduced Riemannian geometry — the mathematical language Einstein would later use for general relativity. <strong>Georg Cantor</strong> created set theory and showed that there are different sizes of infinity: the continuum is strictly larger than the countable infinity of the natural numbers.
+            </p>
+            <div class="math-formula">ℵ₀ &lt; 2<sup>ℵ₀</sup> = |ℝ|</div>
+            <p>
+              Cauchy, Weierstrass, and Dedekind put analysis on rigorous foundations. Galois invented group theory while solving the insolubility of the quintic. The century ended with Hilbert’s problems and the rise of abstract algebra and topology.
+            </p>
+            <span class="tag">Non-Euclidean</span>
+            <span class="tag">Set theory</span>
+            <span class="tag">Infinity</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 20TH & 21ST -->
+      <section class="era above">
+        <div class="era-content">
+          <div class="era-year">1900 – Present</div>
+          <h2 class="era-title">Abstraction, Computers & the Frontiers</h2>
+          <div class="era-body">
+            <p>
+              The 20th century saw mathematics become vastly more abstract and powerful. Hilbert, Gödel, Turing, and Church founded mathematical logic and computability. Gödel’s incompleteness theorems showed that any sufficiently rich formal system is incomplete. Turing machines defined the limits of mechanical calculation and birthed computer science.
+            </p>
+            <p>
+              Category theory, algebraic geometry (Grothendieck), differential topology, and the Langlands program reshaped pure mathematics. Computers enabled the proof of the Four Color Theorem (1976) and later the classification of finite simple groups.
+            </p>
+            <p>
+              Andrew Wiles proved Fermat’s Last Theorem in 1994–95 using elliptic curves and modular forms. Perelman resolved the Poincaré conjecture. Today mathematics underpins cryptography, machine learning, quantum information, and our deepest theories of the physical universe.
+            </p>
+            <p>
+              From tally marks on bones to the search for a unified theory of mathematics itself, the journey continues — infinite, like the subject it studies.
+            </p>
+            <span class="tag">Logic</span>
+            <span class="tag">Computability</span>
+            <span class="tag">Modern pure math</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- OUTRO -->
+      <section class="outro">
+        <h2>The Story Never Ends</h2>
+        <p style="font-size:1.15rem; line-height:1.7; margin-bottom:1.5rem;">
+          Mathematics is humanity’s longest continuous intellectual conversation. Every generation inherits the discoveries of the last and adds new chapters. Zero made calculation universal. π connected the circle to the infinite. Calculus gave us the language of change. Set theory and logic revealed the structure of mathematical thought itself.
+        </p>
+        <p style="font-size:1.15rem; line-height:1.7; margin-bottom:1.5rem;">
+          Scroll back. Explore again. The timeline is long because the history is deep. The symbols still float. The questions remain open.
+        </p>
+        <p style="font-family:'JetBrains Mono',monospace; color:var(--accent-cyan);">
+          ∞ &nbsp; Thank you for traveling through time &nbsp; ∞
+        </p>
+      </section>
+    </div>
+  </div>
+
+<script>
+  // Background stars
+  const canvas = document.getElementById('bgCanvas');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'stars';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.width = (Math.random() * 2 + 1) + 'px';
+    star.style.height = star.style.width;
+    canvas.appendChild(star);
+  }
+
+  // Floating symbols
+  const symbols = ['π', '∞', '∑', '∫', '√', '∆', 'θ', 'φ', 'ℵ', '∂', '∇', '∀', '∃', '∈', '∅', '⊕'];
+  const timeline = document.getElementById('timeline');
+  for (let i = 0; i < 25; i++) {
+    const sym = document.createElement('div');
+    sym.className = 'float-symbol';
+    sym.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    sym.style.left = (Math.random() * 90 + 5) + '%';
+    sym.style.top = (Math.random() * 80 + 10) + '%';
+    sym.style.animationDelay = (Math.random() * 5) + 's';
+    sym.style.animationDuration = (6 + Math.random() * 6) + 's';
+    timeline.appendChild(sym);
+  }
+
+  // Horizontal scroll on wheel
+  const wrapper = document.getElementById('timelineWrapper');
+  wrapper.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    wrapper.scrollLeft += e.deltaY * 1.8 + e.deltaX;
+  }, { passive: false });
+
+  // Progress bar
+  const progressBar = document.getElementById('progressBar');
+  const timelineLine = document.getElementById('timelineLine');
+
+  function updateProgress() {
+    const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+    const pct = maxScroll > 0 ? (wrapper.scrollLeft / maxScroll) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+
+  wrapper.addEventListener('scroll', updateProgress);
+
+  // Set timeline line width after layout
+  window.addEventListener('load', () => {
+    timelineLine.style.width = timeline.scrollWidth + 'px';
+    updateProgress();
+  });
+
+  // Auto scroll
+  let autoScroll = false;
+  let autoInterval = null;
+  const autoBtn = document.getElementById('autoScrollBtn');
+
+  autoBtn.addEventListener('click', () => {
+    autoScroll = !autoScroll;
+    if (autoScroll) {
+      autoBtn.textContent = '❚❚ Pause';
+      autoInterval = setInterval(() => {
+        if (wrapper.scrollLeft >= wrapper.scrollWidth - wrapper.clientWidth - 10) {
+          // loop or stop
+          clearInterval(autoInterval);
+          autoScroll = false;
+          autoBtn.textContent = '▶ Auto Scroll';
+        } else {
+          wrapper.scrollLeft += 4;
+        }
+      }, 16);
+    } else {
+      autoBtn.textContent = '▶ Auto Scroll';
+      clearInterval(autoInterval);
+    }
+  });
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    wrapper.scrollTo({ left: 0, behavior: 'smooth' });
+    if (autoScroll) {
+      autoScroll = false;
+      clearInterval(autoInterval);
+      autoBtn.textContent = '▶ Auto Scroll';
+    }
+  });
+
+  // Drag to scroll
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  wrapper.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX - wrapper.offsetLeft;
+    scrollLeft = wrapper.scrollLeft;
+    wrapper.style.cursor = 'grabbing';
+  });
+
+  wrapper.addEventListener('mouseleave', () => {
+    isDown = false;
+    wrapper.style.cursor = 'grab';
+  });
+
+  wrapper.addEventListener('mouseup', () => {
+    isDown = false;
+    wrapper.style.cursor = 'grab';
+  });
+
+  wrapper.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - wrapper.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    wrapper.scrollLeft = scrollLeft - walk;
+  });
+
+  wrapper.style.cursor = 'grab';
+</script>
+</body>
+</html>

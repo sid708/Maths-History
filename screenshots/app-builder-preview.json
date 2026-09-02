@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "The Infinite Journey",
+      "hasCanvas": false,
+      "bodyTextLen": 7419,
+      "bodyTextHash": "efccc8de69a645de31b996b8e46f95dbf24a35808ff6f985f31c364df686040e",
+      "bodyTextPrefix": "∞ HISTORY OF MATHEMATICS Auto Scroll Restart π θ φ ∞ ∑ ∫ √ ∆ ℵ ∂",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "The Infinite Journey",
+      "hasCanvas": false,
+      "bodyTextLen": 7419,
+      "bodyTextHash": "efccc8de69a645de31b996b8e46f95dbf24a35808ff6f985f31c364df686040e",
+      "bodyTextPrefix": "∞ HISTORY OF MATHEMATICS Auto Scroll Restart π θ φ ∞ ∑ ∫ √ ∆ ℵ ∂",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
